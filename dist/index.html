@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f5ef" />
+    <meta name="description" content="DailySpark：记录每天的想法，把关键词变成可点击、可成长的词云。" />
+    <title>DailySpark · 想法词云</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="DailySpark 首页">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>DailySpark<span class="brand-dot">.</span></span>
+        </a>
+        <div class="header-actions">
+          <span class="today-label" id="today-label"></span>
+          <button class="text-button header-export" id="export-button" type="button">导出备份 <span aria-hidden="true">↗</span></button>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> A SPACE FOR WHAT MATTERS</div>
+            <h1 id="hero-title">让想法，<em>浮出水面。</em></h1>
+            <p>随手记下脑海里的念头。它们会聚成一片词云；你每点击一次，那个值得关注的词就会再长大一点。</p>
+          </div>
+          <div class="hero-stats" aria-label="记录概况">
+            <div><strong id="stat-thoughts">0</strong><span>条想法</span></div>
+            <div><strong id="stat-keywords">0</strong><span>个关键词</span></div>
+            <div><strong id="stat-focus">0</strong><span>次关注</span></div>
+          </div>
+        </section>
+
+        <div class="workspace">
+          <aside class="left-column" aria-label="想法记录区">
+            <section class="panel capture-panel" aria-labelledby="capture-title">
+              <div class="section-label"><span class="section-number">01</span> 捕捉灵感</div>
+              <h2 id="capture-title">今天在想什么？</h2>
+              <p class="panel-subtitle">先记录下来，不用急着做决定。</p>
+              <form id="thought-form">
+                <label class="field-label" for="thought-input">你的想法</label>
+                <textarea id="thought-input" rows="6" maxlength="3000" placeholder="比如：周末做一个分享阅读笔记的小网站……" required></textarea>
+                <div class="input-hint"><span id="char-count">0 / 3000</span><span>支持中文自动提取</span></div>
+                <label class="field-label" for="keyword-input">补充关键词 <span class="optional">可选</span></label>
+                <input id="keyword-input" type="text" maxlength="240" placeholder="阅读、小网站、周末（用逗号分开）" autocomplete="off" />
+                <p class="field-help">系统会自动提取关键词；你填入的词会一并加入。</p>
+                <label class="toggle-row" for="manual-only-toggle">
+                  <input id="manual-only-toggle" type="checkbox" />
+                  <span>只用我填写的关键词</span>
+                </label>
+                <div class="form-actions">
+                  <button class="primary-button" id="save-button" type="submit">记下这个想法 <span aria-hidden="true">↗</span></button>
+                  <button class="text-button hidden" id="cancel-edit-button" type="button">取消编辑</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="panel notes-panel" aria-labelledby="notes-title">
+              <div class="section-topline"><div class="section-label"><span class="section-number">02</span> 回看记录</div><span class="count-badge" id="thought-count-label">0 条</span></div>
+              <h2 id="notes-title">想法清单</h2>
+              <div id="thoughts-list" class="thoughts-list" aria-live="polite"></div>
+            </section>
+          </aside>
+
+          <div class="right-column">
+            <section class="panel cloud-panel" aria-labelledby="cloud-title">
+              <div class="cloud-header">
+                <div>
+                  <div class="section-label"><span class="section-number">03</span> 看见重点</div>
+                  <h2 id="cloud-title">想法词云<span class="title-spark" aria-hidden="true">✳</span></h2>
+                  <p class="panel-subtitle">点击一个词，让它在你的视线里生长。</p>
+                </div>
+                <span class="live-badge"><span></span> LIVE MIND MAP</span>
+              </div>
+              <div class="cloud-stage" id="cloud-stage">
+                <canvas id="wordcloud-canvas" aria-label="可点击的想法词云；下方的关键词按钮也可以操作" role="img"></canvas>
+                <div class="cloud-empty" id="cloud-empty">
+                  <div class="empty-orbit" aria-hidden="true"><span>想</span><span>法</span><span>✳</span></div>
+                  <strong>从第一个念头开始</strong>
+                  <p>在左侧写下想法，它的关键词会在这里出现。</p>
+                </div>
+              </div>
+              <div class="cloud-footer"><span><span class="legend-dot"></span> 点击词条，它会逐渐变大</span><span id="cloud-status">等待你的第一个想法</span></div>
+              <div id="keyword-rail" class="keyword-rail" aria-label="可操作的关键词列表"></div>
+            </section>
+
+            <section class="panel focus-panel" aria-labelledby="focus-title">
+              <div class="focus-heading">
+                <div>
+                  <div class="section-label"><span class="section-number">04</span> 聚焦当下</div>
+                  <h2 id="focus-title">当前关注</h2>
+                </div>
+                <span class="focus-icon" aria-hidden="true">↗</span>
+              </div>
+              <div id="focus-content" class="focus-content"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <div><strong>DailySpark</strong><span>给每一个念头，一个被看见的机会。</span></div>
+        <div class="footer-actions">
+          <span>数据仅保存在此浏览器</span>
+          <button class="text-button" id="import-button" type="button">导入备份</button>
+          <input id="import-input" type="file" accept="application/json,.json" class="visually-hidden" />
+          <a href="https://github.com/timdream/wordcloud2.js" target="_blank" rel="noopener noreferrer">词云引擎 ↗</a>
+        </div>
+      </footer>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./vendor/wordcloud2.js"></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
